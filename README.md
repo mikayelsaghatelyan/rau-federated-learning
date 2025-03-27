@@ -1,7 +1,5 @@
 # 🚀 Federated Learning on CIFAR-10  
 
-![Federated Learning](global_vs_client_accuracy.png)  
-
 A PyTorch implementation of **Federated Learning** using the **CIFAR-10 dataset**, simulating decentralized training across multiple clients with **non-IID data distribution**. This project employs a **Convolutional Neural Network (CNN)** and uses the **Federated Averaging (FedAvg) algorithm** for model aggregation.  
 
 ## 📌 Features  
