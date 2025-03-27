@@ -110,6 +110,16 @@ NUM_ROUNDS = 50  # Default: 50 rounds
 
 ---
 
+## 📖 Documentation  
+
+For detailed information about the project, **federated learning methodology**, and implementation details, check out the [Project Documentation](documentation.html).  
+
+**If hosting on GitHub Pages**, you can upload the `documentation.html` to the `docs/` folder and access it via:  
+```
+https://your-username.github.io/rau-federated-learning/documentation.html
+```
+If you plan to host it, let me know and I can guide you on setting up GitHub Pages! 🚀
+
 ## 📜 License  
 
 This project is open-source and available under the **MIT License**.  
