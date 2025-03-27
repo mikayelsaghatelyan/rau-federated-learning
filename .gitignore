@@ -27,7 +27,7 @@ logs/
 .vscode/
 
 # Ignore generated plots and reports
-*.png
+# *.png
 *.svg
 *.pdf
 *.html
