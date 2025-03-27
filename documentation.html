@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning with CIFAR-10 Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .card {
+            flex: 1 1 300px;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .note {
+            background-color: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .warning {
+            background-color: #fff5e6;
+            border-left: 4px solid #e67e22;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .diagram {
+            text-align: center;
+            margin: 30px 0;
+        }
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            text-align: center;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Federated Learning with CIFAR-10</h1>
+        <p>A comprehensive implementation of FedAvg for image classification</p>
+    </header>
+
+    <section id="introduction">
+        <h2>1. Introduction</h2>
+        <p>This project implements a federated learning framework to train a global model for image classification on the CIFAR-10 dataset. Instead of centralizing all training data, federated learning allows multiple clients to train models on their local data, which are then aggregated into a global model.</p>
+        
+        <div class="note">
+            <strong>Key Features:</strong>
+            <ul>
+                <li>Implementation of the FedAvg algorithm</li>
+                <li>Support for non-IID data distribution using Dirichlet allocation</li>
+                <li>Configurable number of clients and communication rounds</li>
+                <li>Detailed tracking of client and global model performance</li>
+                <li>Visualization tools for model convergence analysis</li>
+            </ul>
+        </div>
+
+        <h3>1.1 CIFAR-10 Dataset</h3>
+        <p>The CIFAR-10 dataset consists of 60,000 32x32 color images in 10 different classes:</p>
+        <div class="container">
+            <div class="card">
+                <h4>Classes</h4>
+                <ul>
+                    <li>Airplane</li>
+                    <li>Car</li>
+                    <li>Bird</li>
+                    <li>Cat</li>
+                    <li>Deer</li>
+                    <li>Dog</li>
+                    <li>Frog</li>
+                    <li>Horse</li>
+                    <li>Ship</li>
+                    <li>Truck</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Dataset Details</h4>
+                <ul>
+                    <li>Training: 50,000 images</li>
+                    <li>Testing: 10,000 images</li>
+                    <li>Image size: 32×32 pixels</li>
+                    <li>Color channels: RGB (3 channels)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture">
+        <h2>2. System Architecture</h2>
+        
+
+
+        <h3>2.1 Convolutional Neural Network Architecture</h3>
+        <p>The model architecture is a Convolutional Neural Network (CNN) with the following structure:</p>
+        
+        <table>
+            <tr>
+                <th>Layer</th>
+                <th>Details</th>
+                <th>Output Shape</th>
+            </tr>
+            <tr>
+                <td>Input</td>
+                <td>RGB Image</td>
+                <td>(3, 32, 32)</td>
+            </tr>
+            <tr>
+                <td>Conv2d</td>
+                <td>32 filters, 3×3 kernel, padding=1</td>
+                <td>(32, 32, 32)</td>
+            </tr>
+            <tr>
+                <td>ReLU + MaxPool2d</td>
+                <td>2×2 pooling</td>
+                <td>(32, 16, 16)</td>
+            </tr>
+            <tr>
+                <td>Conv2d</td>
+                <td>64 filters, 3×3 kernel, padding=1</td>
+                <td>(64, 16, 16)</td>
+            </tr>
+            <tr>
+                <td>ReLU + MaxPool2d</td>
+                <td>2×2 pooling</td>
+                <td>(64, 8, 8)</td>
+            </tr>
+            <tr>
+                <td>Conv2d</td>
+                <td>128 filters, 3×3 kernel, padding=1</td>
+                <td>(128, 8, 8)</td>
+            </tr>
+            <tr>
+                <td>ReLU + MaxPool2d</td>
+                <td>2×2 pooling</td>
+                <td>(128, 4, 4)</td>
+            </tr>
+            <tr>
+                <td>Flatten</td>
+                <td></td>
+                <td>(2048)</td>
+            </tr>
+            <tr>
+                <td>Linear</td>
+                <td>512 units</td>
+                <td>(512)</td>
+            </tr>
+            <tr>
+                <td>ReLU + Dropout(0.25)</td>
+                <td></td>
+                <td>(512)</td>
+            </tr>
+            <tr>
+                <td>Linear</td>
+                <td>10 units (output)</td>
+                <td>(10)</td>
+            </tr>
+        </table>
+
+        <h3>2.2 Federated Averaging (FedAvg) Algorithm</h3>
+        <p>The FedAvg algorithm works as follows:</p>
+        <ol>
+            <li>Initialize a global model</li>
+            <li>For each round:
+                <ol type="a">
+                    <li>Select a subset of clients</li>
+                    <li>Send the global model to each selected client</li>
+                    <li>Each client trains the model on their local data</li>
+                    <li>Server collects and averages model weights from all clients</li>
+                    <li>Update the global model with the averaged weights</li>
+                </ol>
+            </li>
+            <li>Evaluate the global model on a centralized test set</li>
+        </ol>
+    </section>
+
+    <section id="data-distribution">
+        <h2>3. Data Distribution</h2>
+        
+        <h3>3.1 Non-IID Data Allocation</h3>
+        <p>In real-world federated learning scenarios, data is rarely Independent and Identically Distributed (IID) across clients. Our implementation uses a Dirichlet distribution to create realistic data heterogeneity:</p>
+        
+        <pre><code>def create_client_datasets(dataset, num_clients=10, alpha=0.5):
+    """
+    Split dataset among clients using Dirichlet distribution to simulate non-IID data.
+    Lower alpha means more non-IID (e.g., 0.1 is very skewed, 100.0 is almost uniform).
+    """</code></pre>
+        
+        <div class="note">
+            <p>The Dirichlet parameter <code>alpha</code> controls the degree of heterogeneity:</p>
+            <ul>
+                <li><strong>Low alpha (e.g., 0.1)</strong>: Each client gets data mostly from a few classes</li>
+                <li><strong>High alpha (e.g., 100.0)</strong>: Each client gets a nearly uniform distribution of classes</li>
+                <li>Our default <code>alpha=0.5</code> creates a realistic non-IID setting</li>
+            </ul>
+        </div>
+        
+        <h3>3.2 Visualizing Data Distribution</h3>
+        <p>The data distribution across clients is logged during initialization, showing the percentage of samples from each class that each client receives.</p>
+    </section>
+
+    <section id="implementation">
+        <h2>4. Implementation Details</h2>
+        
+        <h3>4.1 Hyperparameters</h3>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>BATCH_SIZE</td>
+                <td>64</td>
+                <td>Mini-batch size for training</td>
+            </tr>
+            <tr>
+                <td>LEARNING_RATE</td>
+                <td>0.01</td>
+                <td>Learning rate for SGD optimizer</td>
+            </tr>
+            <tr>
+                <td>MOMENTUM</td>
+                <td>0.9</td>
+                <td>Momentum factor for SGD optimizer</td>
+            </tr>
+            <tr>
+                <td>NUM_EPOCHS</td>
+                <td>5</td>
+                <td>Number of local epochs per client per round</td>
+            </tr>
+            <tr>
+                <td>NUM_CLIENTS</td>
+                <td>10</td>
+                <td>Total number of clients</td>
+            </tr>
+            <tr>
+                <td>FRACTION_CLIENTS</td>
+                <td>1.0</td>
+                <td>Fraction of clients to select in each round</td>
+            </tr>
+            <tr>
+                <td>NUM_ROUNDS</td>
+                <td>50</td>
+                <td>Total number of federated communication rounds</td>
+            </tr>
+        </table>
+        
+        <h3>4.2 Data Augmentation</h3>
+        <p>To improve model generalization, we apply the following data augmentation techniques to the training data:</p>
+        <pre><code>transform_train = transforms.Compose([
+    transforms.RandomCrop(32, padding=4),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2470, 0.2435, 0.2616))
+])</code></pre>
+
+        <h3>4.3 Client Training Process</h3>
+        <p>Each client trains the model using the following process:</p>
+        <ol>
+            <li>Receive the global model weights</li>
+            <li>Initialize a SGD optimizer with momentum</li>
+            <li>Train for NUM_EPOCHS local epochs</li>
+            <li>Return the updated model to the server</li>
+        </ol>
+        
+        <div class="warning">
+            <p><strong>Important:</strong> Each client runs training on their local data without sharing the raw data with the server, preserving data privacy.</p>
+        </div>
+    </section>
+
+    <section id="fedavg">
+        <h2>5. FedAvg Implementation</h2>
+        
+        <h3>5.1 Weight Averaging</h3>
+        <p>The core of FedAvg is the weight averaging function that aggregates client models:</p>
+        
+        <pre><code>def federated_averaging(client_models):
+    """Average the model weights of client models."""
+    global_model = CNN().to(device)
+    
+    # Get state dict of first model
+    global_dict = global_model.state_dict()
+    
+    # For each layer
+    for k in global_dict.keys():
+        global_dict[k] = torch.stack([client_models[i].state_dict()[k] 
+                                     for i in range(len(client_models))], 0).mean(0)
+    
+    # Load the averaged parameters
+    global_model.load_state_dict(global_dict)
+    
+    return global_model</code></pre>
+        
+        <h3>5.2 Client Selection</h3>
+        <p>In each round, a fraction of clients is selected for training:</p>
+        <pre><code># Select clients for this round
+num_selected = max(1, int(FRACTION_CLIENTS * NUM_CLIENTS))
+selected_clients = np.random.choice(range(NUM_CLIENTS), num_selected, replace=False)</code></pre>
+        
+        <div class="note">
+            <p>With <code>FRACTION_CLIENTS = 1.0</code>, all clients participate in each round. This can be reduced to simulate partial client availability.</p>
+        </div>
+    </section>
+
+    <section id="evaluation">
+        <h2>6. Evaluation and Metrics</h2>
+        
+        <h3>6.1 Model Evaluation</h3>
+        <p>Both client models and the global model are evaluated on the centralized test set after each round:</p>
+        
+        <pre><code>def evaluate(model, test_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    total = 0
+    
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += F.cross_entropy(output, target).item()
+            _, predicted = output.max(1)
+            total += target.size(0)
+            correct += predicted.eq(target).sum().item()
+    
+    test_loss /= len(test_loader)
+    accuracy = 100. * correct / total
+    
+    return test_loss, accuracy</code></pre>
+        
+        <h3>6.2 Performance Metrics</h3>
+        <p>The framework tracks the following metrics during training:</p>
+        <ul>
+            <li>Test accuracy of each client model after training</li>
+            <li>Test accuracy of the global model after each round</li>
+            <li>Test loss of the global model after each round</li>
+            <li>Average client model accuracy per round</li>
+        </ul>
+        
+        <h3>6.3 Visualization</h3>
+        <p>The results are visualized in two plots:</p>
+        <ol>
+            <li><strong>Global Model Accuracy</strong>: Shows the global model accuracy across communication rounds</li>
+            <li><strong>Global vs. Client Models Accuracy</strong>: Compares the global model accuracy with the average client model accuracy</li>
+        </ol>
+        
+
+    </section>
+
+    <section id="running">
+        <h2>7. Running the Framework</h2>
+        
+        <h3>7.1 Requirements</h3>
+        <p>The implementation requires the following dependencies:</p>
+        <ul>
+            <li>PyTorch (>= 1.7.0)</li>
+            <li>torchvision</li>
+            <li>NumPy</li>
+            <li>Matplotlib</li>
+        </ul>
+        
+        <h3>7.2 Execution</h3>
+        <p>To run the federated learning framework:</p>
+        <pre><code>python federated_learning_cifar10.py</code></pre>
+        
+        <h3>7.3 Expected Output</h3>
+        <p>The script will:</p>
+        <ol>
+            <li>Download the CIFAR-10 dataset (if not already present)</li>
+            <li>Create client datasets using Dirichlet distribution</li>
+            <li>Display data distribution statistics</li>
+            <li>Run federated learning for NUM_ROUNDS communication rounds</li>
+            <li>Print training and evaluation metrics for each round</li>
+            <li>Display and save visualization plots</li>
+            <li>Save the final model to 'federated_cifar10_model.pth'</li>
+        </ol>
+        
+        <div class="note">
+            <p>The framework includes an early stopping option if the target accuracy (80%) is reached before completing all rounds.</p>
+        </div>
+    </section>
+
+    <section id="customization">
+        <h2>8. Customization Options</h2>
+        
+        <h3>8.1 Modifying Hyperparameters</h3>
+        <p>The framework can be customized by adjusting the hyperparameters at the beginning of the script:</p>
+        <pre><code># Hyperparameters
+BATCH_SIZE = 64
+LEARNING_RATE = 0.01
+MOMENTUM = 0.9
+NUM_EPOCHS = 5
+NUM_CLIENTS = 10
+FRACTION_CLIENTS = 1.0  # Fraction of clients to use in each round
+NUM_ROUNDS = 50  # Number of federated learning rounds</code></pre>
+        
+        <h3>8.2 Changing Data Distribution</h3>
+        <p>The level of data heterogeneity can be adjusted by modifying the <code>alpha</code> parameter when creating client datasets:</p>
+        <pre><code># For more IID data distribution (more uniform)
+client_datasets = create_client_datasets(train_dataset, num_clients=NUM_CLIENTS, alpha=5.0)
+
+# For more non-IID data distribution (more skewed)
+client_datasets = create_client_datasets(train_dataset, num_clients=NUM_CLIENTS, alpha=0.1)</code></pre>
+        
+        <h3>8.3 Modifying Model Architecture</h3>
+        <p>The CNN model architecture can be customized by modifying the <code>CNN</code> class.</p>
+    </section>
+
+    <section id="advanced">
+        <h2>9. Advanced Extensions</h2>
+        
+        <div class="container">
+            <div class="card">
+                <h3>9.1 Additional FedAvg Variants</h3>
+                <p>The framework can be extended to implement other federated learning algorithms:</p>
+                <ul>
+                    <li>FedProx: Adding proximal term to client optimization</li>
+                    <li>FedNova: Normalizing client updates based on local steps</li>
+                    <li>SCAFFOLD: Using control variates to correct client drift</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>9.2 Differential Privacy</h3>
+                <p>To enhance privacy guarantees, differential privacy can be integrated:</p>
+                <ul>
+                    <li>Add noise to client gradients</li>
+                    <li>Implement gradient clipping</li>
+                    <li>Track privacy budget consumption</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>9.3 Model Personalization</h3>
+                <p>Client models can be personalized:</p>
+                <ul>
+                    <li>Fine-tune global model on local data</li>
+                    <li>Implement client-specific heads</li>
+                    <li>Explore meta-learning approaches</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="conclusion">
+        <h2>10. Conclusion</h2>
+        <p>This federated learning framework successfully implements the FedAvg algorithm for CIFAR-10 image classification. It addresses the challenge of training a global model across multiple clients with heterogeneous data distributions without centralizing the data.</p>
+        
+        <h3>10.1 Key Achievements</h3>
+        <ul>
+            <li>Implementation of FedAvg with non-IID data distribution</li>
+            <li>Achievement of >80% accuracy on CIFAR-10 test set</li>
+            <li>Configurable framework for experimentation</li>
+            <li>Detailed performance tracking and visualization</li>
+        </ul>
+        
+        <h3>10.2 Future Work</h3>
+        <p>Potential areas for future development include:</p>
+        <ul>
+            <li>Implementing more advanced federated learning algorithms</li>
+            <li>Adding differential privacy guarantees</li>
+            <li>Exploring model compression techniques for communication efficiency</li>
+            <li>Implementing asynchronous federated learning</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>Federated Learning with CIFAR-10 Documentation | Created March 2025</p>
+    </footer>
+</body>
+</html>

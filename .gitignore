@@ -30,7 +30,7 @@ logs/
 # *.png
 *.svg
 *.pdf
-*.html
+# *.html
 
 # Ignore environment configuration files
 pyvenv.cfg
